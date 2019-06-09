@@ -48,41 +48,49 @@ foreach ($lines as $line) {
 
 // ファイルに書き戻し
 file_put_contents($fileName, $newLines);
+// -----------------------Redmine登録----------------------
 
 // 日付を指定していないので、本日(実行日)になります。
-// xmlの組み立て
+$headers = array(
+  "Content-type: application/xml",
+  "X-Redmine-API-Key: $apiKey"
+);
+
+// curlオプションの設定
+$curlObj = curl_init();
+curl_setopt($curlObj, CURLOPT_URL, $url);
+curl_setopt($curlObj, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($curlObj, CURLOPT_CONNECTTIMEOUT, 300);
+curl_setopt($curlObj, CURLOPT_POST, 1);
+curl_setopt($curlObj, CURLOPT_HTTPHEADER, $headers);
+
+// ファイル更新時、配列に格納したデータを処理
 foreach ($redLines as $redLine) {
-  $inputXml = "<time_entry>";
-  $inputXml .= "<issue_id>".$redLine["redNum"]."</issue_id>";
-  $inputXml .= "<activity_id>".$activityID."</activity_id>";
-  $inputXml .= "<hours>".$redLine["redTime"]."</hours>";
-  $inputXml .= "<comments>".$redLine["redCom"]."</comments>";
-  $inputXml .= "</time_entry>";
-  $resXml = regist_xml($inputXml, $url, $apiKey);
+  // xmlの組み立て
+  $inputXml = "<time_entry>\n";
+  $inputXml .= "<issue_id>".$redLine["redNum"]."</issue_id>\n";
+  $inputXml .= "<activity_id>".$activityID."</activity_id>\n";
+  $inputXml .= "<hours>".$redLine["redTime"]."</hours>\n";
+  $inputXml .= "<comments>".$redLine["redCom"]."</comments>\n";
+  $inputXml .= "</time_entry>\n";
+  // Redmineに書き出し
+  curl_setopt($curlObj, CURLOPT_POSTFIELDS,"xmlRequest=".$inputXml);
+  $resXml = curl_exec($curlObj);
+  // echo '$resXml = ' . $resXml ."\n";
+  if(curl_errno($curlObj)){echo curl_error($curlObj);}
   resultCheck($resXml);
 }
 
-// ターミナルに表示
+curl_close($curlObj);
+// -----------------------/Redmine登録----------------------
+
+// 結果表示関数
 function resultCheck($resXml){
   $xmlElement = new SimpleXMLElement($resXml);
   echo "Regist Tcket #".$xmlElement->issue['id'];
-  echo ": ".$xmlElement->comments;
-  echo "\tHours: ".$xmlElement->hours;
+  echo "\tHours: ".$xmlElement->hours." h";
   echo "\tCreated On: ".$xmlElement->created_on;
+  echo "\n\t".$xmlElement->comments;
   echo "\n";
 }
 
-// Redmineに書き出し
-function regist_xml($inputXml, $url, $apiKey){
-  // パラメータ
-  $curlObj = curl_init();
-  curl_setopt($curlObj, CURLOPT_URL, $url);
-  curl_setopt($curlObj, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($curlObj, CURLOPT_CONNECTTIMEOUT, 300);
-  curl_setopt($curlObj, CURLOPT_POST, 1);
-  curl_setopt($curlObj, CURLOPT_HTTPHEADER, array("Content-Type: application/xml","X-Redmine-API-Key: $apiKey"));
-  curl_setopt($curlObj, CURLOPT_POSTFIELDS,"xmlRequest=".$inputXml);
-  $res = curl_exec($curlObj);
-  curl_close($curlObj);
-  return $res;
-}
