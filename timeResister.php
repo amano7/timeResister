@@ -31,14 +31,17 @@ foreach ($lines as $line) {
     // チケット番号で始まり、行末に時間がない行に時間を追加
     $workTime = gmdate('G:i', strtotime($match[3]) - strtotime($match[2]));
     $newLines .= $line . " " . $workTime;
-    if (preg_match("/#([0-9]{4}) (.+)$/u", $match[4].$match[5], $matchNumber)){
-      // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
-      array_push($redLines, array(
-        "redNum"=>$matchNumber[1],
-        "redCom"=>$matchNumber[2],
-        "redTime"=>$workTime
-      ));
-    };
+    $comment = $match[4].$match[5];
+
+    // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
+    preg_match("/#([0-9]{4}) (.+)$/u", $comment, $matchNumber);
+    // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
+    $matchNumber = preg_replace("/[\r\n]/","",$matchNumber);
+    array_push($redLines, array(
+      "redNum"=>$matchNumber[1],
+      "redCom"=>$matchNumber[2],
+      "redTime"=>$workTime
+    ));
   } else {
     // 上記以外はそのまま出力
     $newLines .= $line;
