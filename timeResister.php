@@ -28,8 +28,13 @@ foreach ($lines as $line) {
   // Windows用の改行がターミナルに表示できないため改行を削除
   $line = preg_replace("/[\r\n]/","",$line);
   if (preg_match($pattern, $line, $match)){
-    // チケット番号で始まり、行末に時間がない行に時間を追加
-    $workTime = gmdate('G:i', strtotime($match[3]) - strtotime($match[2]));
+    // 開始時間
+    $startTime = strtotime($match[2]);
+    // 終了時間
+    $endTime = strtotime($match[3]);
+    $workTime = gmdate('G:i', $endTime - $startTime);
+
+    // 行末に時間を追加
     $newLines .= $line . " " . $workTime;
     $comment = $match[4].$match[5];
 
