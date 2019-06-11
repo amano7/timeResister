@@ -29,7 +29,7 @@ $pattern = "/(^- )([0-9]{1,2}:[0-9]{2})-([0-9]{1,2}:[0-9]{2})( .+[^0-9]{1,2}[^:]
 $lines = file($fileName);
 
 $newLines = "";
-$redLines = array();
+$redLines = [];
 
 foreach ($lines as $line) {
     // Windows用の改行がターミナルに表示できないため改行を削除
