@@ -114,4 +114,3 @@ function resultCheck($resXml)
     echo "\n\t" . $xmlElement->comments;
     echo "\n";
 }
-
