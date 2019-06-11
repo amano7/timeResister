@@ -1,14 +1,14 @@
 <?php
 
 // ---------------------- 設定 ----------------------
-//Redmineの活動ID 作業:11
+// Redmineの活動ID 作業:11
 $activityID = 11;
-//RedmineAPI Key
+// RedmineAPI Key
 $apiKey = 'b06ee7656b9dd371a0ae2c5b55411f299ba124f4';
 // Redmine時間記録URL
 $url = "https://my.redmine.jp/toumei/time_entries.xml";
 // for windows \r\n
-//for Mac \n
+// for Mac \n
 $nl = "\r\n";
 // ---------------------- /設定 ----------------------
 
