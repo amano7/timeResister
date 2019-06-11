@@ -7,7 +7,7 @@ $activityID = 11;
 $apiKey = 'b06ee7656b9dd371a0ae2c5b55411f299ba124f4';
 // Redmine時間記録URL
 $url = "https://my.redmine.jp/toumei/time_entries.xml";
-// for windows \r\n
+// for Windows \r\n
 // for Mac \n
 $nl = "\r\n";
 // ---------------------- /設定 ----------------------
