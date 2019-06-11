@@ -23,7 +23,7 @@ $fileName = $argv[1];
 // 例：
 // - 09:50-10:00 #1047 事前検証テストケース一覧の更新
 // UTF-8 を処理するため明示的に「u」をつけています。
-$pattern = "/(^- )([0-9]{1,2}:[0-9]{2})-([0-9]{1,2}:[0-9]{2})( .+[^0-9]{1,2}[^:][^0-9]{2})$/u";
+$pattern = '/^- ([0-9]{1,2}:[0-9]{2})-([0-9]{1,2}:[0-9]{2})( .+[^0-9]{1,2}[^:][^0-9]{2})$/u';
 
 // ファイルを行単位で配列に格納
 $lines = file($fileName);
@@ -37,17 +37,17 @@ foreach ($lines as $line) {
     // $patternにマッチする行を処理
     if (preg_match($pattern, $line, $match)) {
         // 開始時間
-        $startTime = strtotime($match[2]);
+        $startTime = strtotime($match[1]);
         // 終了時間
-        $endTime = strtotime($match[3]);
+        $endTime = strtotime($match[2]);
         $workTime = gmdate('G:i', $endTime - $startTime);
 
         // 行末に時間を追加
         $newLines .= $line . " " . $workTime;
-        $comment = $match[4];
+        $comment = $match[3];
 
         // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
-        if (preg_match("/#([0-9]{4}) (.+)$/u", $comment, $matchNumber)) {
+        if (preg_match('/#([0-9]{4}) (.+)$/u', $comment, $matchNumber)) {
             // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
             $matchNumber = preg_replace("/[\r\n]/u", "", $matchNumber);
             array_push($redLines, array(
