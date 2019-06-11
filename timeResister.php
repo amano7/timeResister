@@ -33,7 +33,7 @@ $redLines = array();
 
 foreach ($lines as $line) {
     // Windows用の改行がターミナルに表示できないため改行を削除
-    $line = preg_replace("/[\r\n]/", "", $line);
+    $line = preg_replace("/[\r\n]/u", "", $line);
     // $patternにマッチする行を処理
     if (preg_match($pattern, $line, $match)) {
         // 開始時間
@@ -49,7 +49,7 @@ foreach ($lines as $line) {
         // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
         preg_match("/#([0-9]{4}) (.+)$/u", $comment, $matchNumber);
         // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
-        $matchNumber = preg_replace("/[\r\n]/", "", $matchNumber);
+        $matchNumber = preg_replace("/[\r\n]/u", "", $matchNumber);
         array_push($redLines, array(
             "redNum" => $matchNumber[1],
             "redCom" => $matchNumber[2],
