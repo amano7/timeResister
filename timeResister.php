@@ -32,34 +32,34 @@ $newLines = "";
 $redLines = array();
 
 foreach ($lines as $line) {
-  // Windows用の改行がターミナルに表示できないため改行を削除
-  $line = preg_replace("/[\r\n]/","",$line);
-  // $patternにマッチする行を処理
-  if (preg_match($pattern, $line, $match)){
-    // 開始時間
-    $startTime = strtotime($match[2]);
-    // 終了時間
-    $endTime = strtotime($match[3]);
-    $workTime = gmdate('G:i', $endTime - $startTime);
+    // Windows用の改行がターミナルに表示できないため改行を削除
+    $line = preg_replace("/[\r\n]/", "", $line);
+    // $patternにマッチする行を処理
+    if (preg_match($pattern, $line, $match)) {
+        // 開始時間
+        $startTime = strtotime($match[2]);
+        // 終了時間
+        $endTime = strtotime($match[3]);
+        $workTime = gmdate('G:i', $endTime - $startTime);
 
-    // 行末に時間を追加
-    $newLines .= $line . " " . $workTime;
-    $comment = $match[4].$match[5];
+        // 行末に時間を追加
+        $newLines .= $line . " " . $workTime;
+        $comment = $match[4] . $match[5];
 
-    // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
-    preg_match("/#([0-9]{4}) (.+)$/u", $comment, $matchNumber);
-    // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
-    $matchNumber = preg_replace("/[\r\n]/","",$matchNumber);
-    array_push($redLines, array(
-      "redNum"=>$matchNumber[1],
-      "redCom"=>$matchNumber[2],
-      "redTime"=>$workTime
-    ));
-  } else {
-    // 上記以外はそのまま出力
-    $newLines .= $line;
-  }
-  $newLines .= $nl;
+        // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
+        preg_match("/#([0-9]{4}) (.+)$/u", $comment, $matchNumber);
+        // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
+        $matchNumber = preg_replace("/[\r\n]/", "", $matchNumber);
+        array_push($redLines, array(
+            "redNum" => $matchNumber[1],
+            "redCom" => $matchNumber[2],
+            "redTime" => $workTime
+        ));
+    } else {
+        // 上記以外はそのまま出力
+        $newLines .= $line;
+    }
+    $newLines .= $nl;
 }
 
 // ファイルに書き戻し
@@ -70,8 +70,8 @@ file_put_contents($fileName, $newLines);
 
 // 日付を指定していないので、本日(実行日)になります。
 $headers = array(
-  "Content-type: application/xml",
-  "X-Redmine-API-Key: $apiKey"
+    "Content-type: application/xml",
+    "X-Redmine-API-Key: $apiKey"
 );
 
 // curlオプションの設定
@@ -84,31 +84,34 @@ curl_setopt($curlObj, CURLOPT_HTTPHEADER, $headers);
 
 // ファイル更新時、配列に格納したデータを処理
 foreach ($redLines as $redLine) {
-  // xmlの組み立て
-  $inputXml = "<time_entry>\n";
-  $inputXml .= "<issue_id>".$redLine["redNum"]."</issue_id>\n";
-  $inputXml .= "<activity_id>".$activityID."</activity_id>\n";
-  $inputXml .= "<hours>".$redLine["redTime"]."</hours>\n";
-  $inputXml .= "<comments>".$redLine["redCom"]."</comments>\n";
-  $inputXml .= "</time_entry>\n";
-  // Redmineに書き出し
-  curl_setopt($curlObj, CURLOPT_POSTFIELDS,"xmlRequest=".$inputXml);
-  $resXml = curl_exec($curlObj);
-  // echo '$resXml = ' . $resXml ."\n";
-  if(curl_errno($curlObj)){echo curl_error($curlObj);}
-  resultCheck($resXml);
+    // xmlの組み立て
+    $inputXml = "<time_entry>\n";
+    $inputXml .= "<issue_id>" . $redLine["redNum"] . "</issue_id>\n";
+    $inputXml .= "<activity_id>" . $activityID . "</activity_id>\n";
+    $inputXml .= "<hours>" . $redLine["redTime"] . "</hours>\n";
+    $inputXml .= "<comments>" . $redLine["redCom"] . "</comments>\n";
+    $inputXml .= "</time_entry>\n";
+    // Redmineに書き出し
+    curl_setopt($curlObj, CURLOPT_POSTFIELDS, "xmlRequest=" . $inputXml);
+    $resXml = curl_exec($curlObj);
+    // echo '$resXml = ' . $resXml ."\n";
+    if (curl_errno($curlObj)) {
+        echo curl_error($curlObj);
+    }
+    resultCheck($resXml);
 }
 
 curl_close($curlObj);
 // -----------------------/Redmine登録----------------------
 
 // 結果表示関数
-function resultCheck($resXml){
-  $xmlElement = new SimpleXMLElement($resXml);
-  echo "Regist Tcket #".$xmlElement->issue['id'];
-  echo "\tHours: ".$xmlElement->hours." h";
-  echo "\tCreated On: ".$xmlElement->created_on;
-  echo "\n\t".$xmlElement->comments;
-  echo "\n";
+function resultCheck($resXml)
+{
+    $xmlElement = new SimpleXMLElement($resXml);
+    echo "Regist Tcket #" . $xmlElement->issue['id'];
+    echo "\tHours: " . $xmlElement->hours . " h";
+    echo "\tCreated On: " . $xmlElement->created_on;
+    echo "\n\t" . $xmlElement->comments;
+    echo "\n";
 }
 
