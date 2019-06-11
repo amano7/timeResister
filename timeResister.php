@@ -9,7 +9,7 @@ $apiKey = 'b06ee7656b9dd371a0ae2c5b55411f299ba124f4';
 $url = "https://my.redmine.jp/toumei/time_entries.xml";
 // for Windows \r\n
 // for Mac \n
-$nl = "\r\n";
+$nl = PHP_EOL;
 // ---------------------- /設定 ----------------------
 
 
