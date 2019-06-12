@@ -69,10 +69,10 @@ file_put_contents($fileName, $newLines);
 // -----------------------Redmine登録----------------------
 
 // 日付を指定していないので、本日(実行日)になります。
-$headers = array(
+$headers = [
     "Content-type: application/xml",
     "X-Redmine-API-Key: $apiKey"
-);
+];
 
 // curlオプションの設定
 $curlObj = curl_init();
