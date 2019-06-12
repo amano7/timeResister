@@ -33,6 +33,7 @@ $redLines = [];
 foreach ($lines as $line) {
     // Windows用の改行がターミナルに表示できないため改行を削除
     $line = preg_replace("/[\r\n]/u", "", $line);
+
     // $patternにマッチする行を処理
     if (preg_match($pattern, $line, $match)) {
         // 開始時間
