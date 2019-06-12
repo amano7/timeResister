@@ -6,7 +6,7 @@ $activityID = 11;
 // RedmineAPI Key
 $apiKey = 'b06ee7656b9dd371a0ae2c5b55411f299ba124f4';
 // Redmine時間記録URL
-$url = "https://my.redmine.jp/toumei/time_entries.xml";
+$url = 'https://my.redmine.jp/toumei/time_entries.xml';
 // for Windows \r\n
 // for Mac \n
 $nl = PHP_EOL;
@@ -27,12 +27,12 @@ $pattern = '/^- ([0-9]{1,2}:[0-9]{2})-([0-9]{1,2}:[0-9]{2})( .+[^0-9]{1,2}[^:][^
 // ファイルを行単位で配列に格納
 $lines = file($fileName);
 
-$newLines = "";
+$newLines = '';
 $redLines = [];
 
 foreach ($lines as $line) {
     // Windows用の改行がターミナルに表示できないため改行を削除
-    $line = preg_replace("/[\r\n]/u", "", $line);
+    $line = preg_replace("/[\r\n]/u", '', $line);
 
     // $patternにマッチする行を処理
     if (preg_match($pattern, $line, $match)) {
@@ -43,17 +43,17 @@ foreach ($lines as $line) {
         $workTime = gmdate('G:i', $endTime - $startTime);
 
         // 行末に時間を追加
-        $newLines .= $line . " " . $workTime;
+        $newLines .= $line . ' ' . $workTime;
         $comment = $match[3];
 
         // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
         if (preg_match('/#([0-9]+) (.+)$/u', $comment, $matchNumber)) {
             // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
-            $matchNumber = preg_replace("/[\r\n]/u", "", $matchNumber);
+            $matchNumber = preg_replace("/[\r\n]/u", '', $matchNumber);
             array_push($redLines, array(
-                "redNum" => $matchNumber[1],
-                "redCom" => $matchNumber[2],
-                "redTime" => $workTime
+                'redNum' => $matchNumber[1],
+                'redCom' => $matchNumber[2],
+                'redTime' => $workTime
             ));
         }
     } else {
@@ -71,7 +71,7 @@ file_put_contents($fileName, $newLines);
 
 // 日付を指定していないので、本日(実行日)になります。
 $headers = [
-    "Content-type: application/xml",
+    'Content-type: application/xml',
     "X-Redmine-API-Key: $apiKey"
 ];
 
@@ -87,13 +87,13 @@ curl_setopt($curlObj, CURLOPT_HTTPHEADER, $headers);
 foreach ($redLines as $redLine) {
     // xmlの組み立て
     $inputXml = "<time_entry>\n";
-    $inputXml .= "<issue_id>" . $redLine["redNum"] . "</issue_id>\n";
-    $inputXml .= "<activity_id>" . $activityID . "</activity_id>\n";
-    $inputXml .= "<hours>" . $redLine["redTime"] . "</hours>\n";
-    $inputXml .= "<comments>" . $redLine["redCom"] . "</comments>\n";
+    $inputXml .= '<issue_id>' . $redLine['redNum'] . "</issue_id>\n";
+    $inputXml .= '<activity_id>' . $activityID . "</activity_id>\n";
+    $inputXml .= '<hours>' . $redLine['redTime'] . "</hours>\n";
+    $inputXml .= '<comments>' . $redLine['redCom'] . "</comments>\n";
     $inputXml .= "</time_entry>\n";
     // Redmineに書き出し
-    curl_setopt($curlObj, CURLOPT_POSTFIELDS, "xmlRequest=" . $inputXml);
+    curl_setopt($curlObj, CURLOPT_POSTFIELDS, 'xmlRequest=' . $inputXml);
     $resXml = curl_exec($curlObj);
     // echo '$resXml = ' . $resXml ."\n";
     if (curl_errno($curlObj)) {
@@ -109,8 +109,8 @@ curl_close($curlObj);
 function resultCheck($resXml)
 {
     $xmlElement = new SimpleXMLElement($resXml);
-    echo "Regist Tcket #" . $xmlElement->issue['id'];
-    echo "\tHours: " . $xmlElement->hours . " h";
+    echo 'Regist Tcket #' . $xmlElement->issue['id'];
+    echo "\tHours: " . $xmlElement->hours . ' h';
     echo "\tCreated On: " . $xmlElement->created_on;
     echo "\n\t" . $xmlElement->comments;
     echo "\n";
