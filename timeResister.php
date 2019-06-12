@@ -46,7 +46,7 @@ foreach ($lines as $line) {
         $comment = $match[3];
 
         // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
-        if (preg_match('/#([0-9]{4}) (.+)$/u', $comment, $matchNumber)) {
+        if (preg_match('/#([0-9]+) (.+)$/u', $comment, $matchNumber)) {
             // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
             $matchNumber = preg_replace("/[\r\n]/u", "", $matchNumber);
             array_push($redLines, array(
