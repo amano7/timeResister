@@ -1,6 +1,9 @@
 {
     "name": "amano7/redmine-time-register",
     "type": "project",
+    "require": {
+        "php": ">=7.2.0"
+    },
     "require-dev": {
         "phpunit/phpunit": "^8.2"
     },
