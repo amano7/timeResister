@@ -4,6 +4,19 @@
     "require-dev": {
         "phpunit/phpunit": "^8.2"
     },
+    "autoload": {
+        "psr-4": {
+            "Amano7\\RedmineTimeRegister\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Amano7\\RedmineTimeRegister\\": [
+                "tests/",
+                "tests/Fake"
+            ]
+        }
+    },
     "scripts": {
         "test": [
             "vendor/bin/phpunit"
