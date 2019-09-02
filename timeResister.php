@@ -2,11 +2,12 @@
 
 // ---------------------- 設定 ----------------------
 // Redmineの活動ID 作業:11
-$activityID = 11;
+// Redmineの活動ID eilsystem 開発作業:9
+$activityID = 9;
 // RedmineAPI Key
-$apiKey = 'b06ee7656b9dd371a0ae2c5b55411f299ba124f4';
+$apiKey = '67846d2f3b39e9d04b5bbfb927370ef612bb00f4';
 // Redmine時間記録URL
-$url = 'https://my.redmine.jp/toumei/time_entries.xml';
+$url = 'https://redmine.eilsystem.info/projects/polaris-export_support/time_entries.xml';
 // for Windows \r\n
 // for Mac \n
 $nl = PHP_EOL;
