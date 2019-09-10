@@ -9,13 +9,14 @@ class LineParserTest extends TestCase
     {
         $parser = new LineParser();
 
-        $line = '- 09:00-10:00 #1047 事前検証テストケース一覧の更新' . "\n";
+        $line = '- 09:15-09:45 #9910 東邦会打ち合わせ [打ち合わせ]' . "\n";
         $test = $parser->parse($line);
 
         $expected = [
-            'redNum' => 1047,
-            'redCom' => '事前検証テストケース一覧の更新',
-            'redTime' => 1.00,
+            'redNum' => '9910',
+            'redCom' => '東邦会打ち合わせ ',
+            'redTime' => '0:30',
+            'activityID' => 11
         ];
         $this->assertSame($expected, $test);
     }
