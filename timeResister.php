@@ -3,7 +3,7 @@
 // ---------------------- 設定 ----------------------
 // Redmineの活動ID 作業:11
 // Redmineの活動ID eilsystem 開発作業:9
-$activityID = 9;
+$gl_activityID = 9;
 // RedmineAPI Key
 $apiKey = '67846d2f3b39e9d04b5bbfb927370ef612bb00f4';
 // Redmine時間記録URL
@@ -30,6 +30,16 @@ $lines = file($fileName);
 
 $newLines = '';
 $redLines = [];
+$activities = [
+    "\[設計作業\]"=>8,
+    "\[開発作業\]"=>9,
+    "\[確認作業\]"=>10,
+    "\[打ち合わせ\]"=>11,
+    "\[調査\]"=>12,
+    "\[その他\]"=>13,
+    "\[営業活動\]"=>14,
+    "\[チケットの記入\]"=>15
+];
 
 foreach ($lines as $line) {
     // Windows用の改行がターミナルに表示できないため改行を削除
@@ -51,10 +61,19 @@ foreach ($lines as $line) {
         if (preg_match('/#([0-9]+) (.+)$/u', $comment, $matchNumber)) {
             // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
             $matchNumber = preg_replace("/[\r\n]/u", '', $matchNumber);
+            $matchCom = $matchNumber[2];
+            foreach ($activities as $key => $value) {
+                if (preg_match("/(.+ )($key)/u",$matchNumber[2], $matchComment)){
+                    $activityID = $value;
+                    $matchCom = $matchComment[1];
+                    break;
+                }
+            }
             array_push($redLines, array(
                 'redNum' => $matchNumber[1],
-                'redCom' => $matchNumber[2],
-                'redTime' => $workTime
+                'redCom' => $matchCom,
+                'redTime' => $workTime,
+                'activityID' => $activityID
             ));
         }
     } else {
@@ -86,10 +105,13 @@ curl_setopt($curlObj, CURLOPT_HTTPHEADER, $headers);
 
 // ファイル更新時、配列に格納したデータを処理
 foreach ($redLines as $redLine) {
+    if ($redLine['activityID']==''){
+        $redLine['activityID'] = $gl_activityID;
+    }
     // xmlの組み立て
     $inputXml = "<time_entry>\n";
     $inputXml .= '<issue_id>' . $redLine['redNum'] . "</issue_id>\n";
-    $inputXml .= '<activity_id>' . $activityID . "</activity_id>\n";
+    $inputXml .= '<activity_id>' . $redLine['activityID'] . "</activity_id>\n";
     $inputXml .= '<hours>' . $redLine['redTime'] . "</hours>\n";
     $inputXml .= '<comments>' . $redLine['redCom'] . "</comments>\n";
     $inputXml .= "</time_entry>\n";
