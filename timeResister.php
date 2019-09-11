@@ -62,6 +62,7 @@ foreach ($lines as $line) {
             // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
             $matchNumber = preg_replace("/[\r\n]/u", '', $matchNumber);
             $matchCom = $matchNumber[2];
+            $activityID = '';
             foreach ($activities as $key => $value) {
                 if (preg_match("/(.+ )($key)/u",$matchNumber[2], $matchComment)){
                     $activityID = $value;
