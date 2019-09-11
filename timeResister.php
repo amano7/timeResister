@@ -31,14 +31,14 @@ $lines = file($fileName);
 $newLines = '';
 $redLines = [];
 $activities = [
-    "\[設計作業\]"=>8,
-    "\[開発作業\]"=>9,
-    "\[確認作業\]"=>10,
-    "\[打ち合わせ\]"=>11,
-    "\[調査\]"=>12,
-    "\[その他\]"=>13,
-    "\[営業活動\]"=>14,
-    "\[チケットの記入\]"=>15
+    "\[設計作業\]" => 8,
+    "\[開発作業\]" => 9,
+    "\[確認作業\]" => 10,
+    "\[打ち合わせ\]" => 11,
+    "\[調査\]" => 12,
+    "\[その他\]" => 13,
+    "\[営業活動\]" => 14,
+    "\[チケットの記入\]" => 15
 ];
 
 foreach ($lines as $line) {
@@ -105,7 +105,7 @@ curl_setopt($curlObj, CURLOPT_HTTPHEADER, $headers);
 
 // ファイル更新時、配列に格納したデータを処理
 foreach ($redLines as $redLine) {
-    if ($redLine['activityID']==''){
+    if ($redLine['activityID'] == '') {
         $redLine['activityID'] = $gl_activityID;
     }
     // xmlの組み立て
