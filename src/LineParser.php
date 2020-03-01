@@ -5,76 +5,83 @@ namespace Amano7\RedmineTimeRegister;
 class LineParser
 {
     /**
+    * @param string $pattern
+    *
+    */
+    private $pattern = '/^(?!.+[0-9]{1,2}:[0-9]{2}$)^- ([0-9]{1,2}:[0-9]{2}) \#([0-9]+) (.+$)\n^- ([0-9]{1,2}:[0-9]{2}).*$/mu';
+    public function setPattern($ptn){
+        $this->pattern = $ptn;
+    }
+
+    /**
+    * @param string $act
+    * @param string $defID
+    */
+    private $activities = [
+        '\[設計作業\]'        => 8,
+        '\[開発作業\]'        => 9,
+        '\[確認作業\]'        => 10,
+        '\[打ち合わせ\]'      => 11,
+        '\[調査\]'            => 12,
+        '\[その他\]'          => 13,
+        '\[営業活動\]'        => 14,
+        '\[チケットの記入\]'  => 15,
+    ];
+    private $defaultId = 9;
+    public function setActivities($act,$defID){
+        $this->activities = $act;
+        $this->defaultId = $defID;
+    }
+
+    /**
      * @param string $line
      *
      * @return  array [
      *      'redNum' => <<TicketNumber>>,
      *      'redCom' => <<Comments>>,
      *      'redTime' => <<Hours>>,
+     *      'activityID'=> <<activity ID>>
      * ]
      */
-
-
     public function parse(string $line): array
     {
-        $glActivityId = 9;
         $redLines = [];
-
-        // @ToDo 失敗しないように検討
-        $pattern    = '/^- ([0-9]{1,2}:[0-9]{2})-([0-9]{1,2}:[0-9]{2})( .+[^0-9]{1,2}[^:][^0-9]{2})$/u';
-        $activities = [
-            '\[設計作業\]'        => 8,
-            '\[開発作業\]'        => 9,
-            '\[確認作業\]'        => 10,
-            '\[打ち合わせ\]'      => 11,
-            '\[調査\]'            => 12,
-            '\[その他\]'          => 13,
-            '\[営業活動\]'        => 14,
-            '\[チケットの記入\]'  => 15,
-        ];
-        if (preg_match($pattern, $line, $match)) {
+        if (preg_match($this->pattern, $line, $match)) {
             // 開始時間
             $startTime = strtotime($match[1]);
             // 終了時間
-            $endTime  = strtotime($match[2]);
+            $endTime  = strtotime($match[4]);
+            // 作業時間
             $workTime = gmdate('G:i', $endTime - $startTime);
+            // チケット番号
+            $chicketNum = $match[2];
+            // コメント
             $comment  = $match[3];
-            // コメントの先頭で「#」で始まる番号とコメント、作業時間を分けて配列に格納
-            if (preg_match('/#([0-9]+) (.+)$/u', $comment, $matchNumber)) {
-                // チケット番号とコメントを取得し配列に格納(Redmine登録用) ※処理を行ったもののみ記録
-                $matchNumber = preg_replace("/[\r\n]/u", '', $matchNumber);
-                $matchCom = $matchNumber[2];
-                $actID = '';
-                foreach ($activities as $key => $value) {
-                    if (preg_match("/(.+ )($key)/u", $matchNumber[2], $matchComments)) {
-                        $actID    = $value;
-                        $matchCom = $matchComments[1];
-                        break;
-                    }
+            // アクティビティー/コメント
+            $actID = $this->defaultId ;
+            $matchCom = $comment ;
+            foreach ($this->activities as $key => $value) {
+                if (preg_match("/(.+ *)($key)/u", $comment, $matchComments)) {
+                    $actID    = $value;
+                    $matchCom = $matchComments[1];
+                    break;
                 }
-                if ($actID === '') {
-                    $actID = $glActivityId ;
-                }
-
-                $redLines = [
-                    'redNum' => strval($matchNumber[1]),
-                    'redCom' => $matchCom,
-                    'redTime' => strval($workTime),
-                    'activityID' => $actID,
-                ];
-            }//end if
+            }
+            // 配列に格納
+            $redLines = [
+                'redNum' => strval($chicketNum),
+                'redCom' => $matchCom,
+                'redTime' => strval($workTime),
+                'activityID' => $actID,
+            ];
         } else {
             $redLines = [
-                'redNum'     => $line,
+                'redNum'     => '',
                 'redCom'     => '',
                 'redTime'    => '',
-                'activityID' => '',
+                'activityID' => 0,
             ];
         }//end if
-
         return $redLines;
-
     }//end parse()
-
-
 }//end class
