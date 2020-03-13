@@ -77,6 +77,8 @@
 
 1. PHP.iniでcURLがコメントアウトされていないか
 
+   Mac の場合 `brew install curl` などでcUrlが入っていれば、下記の作業は不要です。
+   
    行頭の「;」でコメントアウトされている場合は、外してください。
 
    PHP.ini
@@ -91,7 +93,6 @@
    ```sh
    $ php -i | grep php.ini
    ```
-   
 
 1. 証明書がない場合、設定してください。
    証明書は、下記からダウンロードできますので、適切な位置に入れてパスを設定してください。(推奨パス：phpのパス\extras\ssl\cacert.pem)
@@ -120,7 +121,8 @@ Redmineの個人設定から「APIアクセスキー」を取得してtimeResist
 
   1. 活動IDの設定
   1. API Key
-  1. Redmine URL
+  1. Redmine URL  
+     URLの最後に「.xml」を追記し「time_entries.xml」となるようにします。
   1. 改行コード(テキストファイルに書き戻すときの改行コード)
 
      ```php
