@@ -45,8 +45,17 @@ class LineParser
      */
     public function parse(string $line): array
     {
-        $redLines = [];
+        $redLines = [
+            'redNum'     => '',
+            'redCom'     => '',
+            'redTime'    => '',
+            'activityID' => 0,
+        ];
         if (preg_match($this->pattern, $line, $match)) {
+            // 次の行に時間が設定されていなかったらスキップ
+            if ($match[4] == '00:00') {
+                return $redLines;
+            }
             // 開始時間
             $startTime = strtotime($match[1]);
             // 終了時間
@@ -73,13 +82,6 @@ class LineParser
                 'redCom' => $matchCom,
                 'redTime' => strval($workTime),
                 'activityID' => $actID,
-            ];
-        } else {
-            $redLines = [
-                'redNum'     => '',
-                'redCom'     => '',
-                'redTime'    => '',
-                'activityID' => 0,
             ];
         }//end if
         return $redLines;
