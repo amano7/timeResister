@@ -2,9 +2,9 @@
 
 namespace Amano7\RedmineTimeRegister;
 
-include "/Users/YasushiAmano/dev/timeRegister/src/TextModify.php";
-include "/Users/YasushiAmano/dev/timeRegister/src/RedmineRegister.php";
-include "/Users/YasushiAmano/dev/timeRegister/src/LineParser.php";
+include "src/TextModify.php";
+include "src/RedmineRegister.php";
+include "src/LineParser.php";
 
 // 第一引数(ファイル名)
 $fileName = $argv[1];
