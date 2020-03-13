@@ -85,6 +85,13 @@
    ;extension=curl
    extension=curl
    ```
+   
+   php.ini の場所は、下記のコマンドで確認可能です。
+   
+   ```sh
+   $ php -i | grep php.ini
+   ```
+   
 
 1. 証明書がない場合、設定してください。
    証明書は、下記からダウンロードできますので、適切な位置に入れてパスを設定してください。(推奨パス：phpのパス\extras\ssl\cacert.pem)
