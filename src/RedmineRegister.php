@@ -8,7 +8,12 @@ class RedmineRegister
     // RedmineAPI Key
     private $apiKey = '67846d2f3b39e9d04b5bbfb927370ef612bb00f4';
     // Redmine時間記録URL
-    private $url = 'https://redmine.eilsystem.info/projects/polaris-export_support/time_entries.xml';
+    private $url = 'https://redmine.eilsystem.info/time_entries.xml';
+    // ---------------------- /Redmine登録----------------------
+
+    /**
+    * 設定項目を配列に設定
+    */
     public function setApi($apiKey, $url){
         $this->apiKey = $apiKey;
         $this->url = $url;

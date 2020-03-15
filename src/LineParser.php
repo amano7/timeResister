@@ -16,6 +16,8 @@ class LineParser
     /**
     * @param string $act
     * @param string $defID
+    *
+    * 活動(Activity)番号を設定
     */
     private $activities = [
         '\[設計作業\]'        => 8,
@@ -27,7 +29,10 @@ class LineParser
         '\[営業活動\]'        => 14,
         '\[チケットの記入\]'  => 15,
     ];
+    // デフォルトの活動番号を設定(活動が記載されていない場合に自動設定)
     private $defaultId = 9;
+
+    // 活動の種類とデフォルト値を配列に格納
     public function setActivities($act,$defID){
         $this->activities = $act;
         $this->defaultId = $defID;
