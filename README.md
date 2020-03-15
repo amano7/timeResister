@@ -77,7 +77,7 @@
 
 1. PHP.iniでcURLがコメントアウトされていないか
 
-   Mac の場合 `brew install curl` などでcUrlが入っていれば、下記の作業は不要です。
+   **※** Mac の場合 `brew install curl` などでcUrlが入っていれば、下記の作業は不要です。 
    
    行頭の「;」でコメントアウトされている場合は、外してください。
 
@@ -108,7 +108,6 @@
    curl.cainfo = C:\php\extras\ssl\cacert.pem
    ```
 
-
 #### パラメータの設定
 
 ##### Redmineから取得する情報
@@ -123,20 +122,43 @@ Redmineの個人設定から「APIアクセスキー」を取得してtimeResist
   1. API Key
   1. Redmine URL  
      URLの最後に「.xml」を追記し「time_entries.xml」となるようにします。
-  1. 改行コード(テキストファイルに書き戻すときの改行コード)
 
-     ```php
-     // ---------------------- 設定 ----------------------
-     //Redmineの活動ID 作業:11
-     $activityID = 11;
-     //RedmineAPI Key
-     $apiKey = '67846d2f3b39e9d04b5bbfb927370ef612bb00f4';
-     // Redmine時間記録URL
-     $url = "https://my.redmine.jp/toumei/time_entries.xml";
-     // for windows \r\n
-     $nl = "\r\n";
-     // ---------------------- /設定 ----------------------
-     ```
+##### 設定場所
+
+- 活動の設定
+
+  LineParser.php
+
+  ```php
+  /*
+  * 活動(Activity)番号を設定
+  */
+  private $activities = [
+    '\[設計作業\]'        => 8,
+    '\[開発作業\]'        => 9,
+    '\[確認作業\]'        => 10,
+    '\[打ち合わせ\]'      => 11,
+    '\[調査\]'            => 12,
+    '\[その他\]'          => 13,
+    '\[営業活動\]'        => 14,
+    '\[チケットの記入\]'  => 15,
+  ];
+  // デフォルトの活動番号を設定(活動が記載されていない場合に自動設定)
+  private $defaultId = 9;
+
+
+- Redmine API 設定
+
+  RedmineRegister.php
+
+  ```php
+  // -----------------------Redmine登録----------------------
+  // RedmineAPI Key
+  private $apiKey = '67846d2f3b39e9d04b5bbfb927370ef612bb00f4';
+  // Redmine時間記録URL
+  private $url = 'https://redmine.eilsystem.info/time_entries.xml';
+  // ---------------------- /Redmine登録----------------------
+  ```
 
 ### 通常の使用
 
