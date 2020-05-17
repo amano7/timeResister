@@ -33,17 +33,24 @@ class TextModify
         $newLines = '';
         // 2行目取得のため総数から1をへらす
         $lineCount = count($lines) - 1;
+        // 日付収集
+        $spentOn = '';
         for($i = 0; $i < $lineCount; $i++ ){
             // 一行目と2行目を取得
             $line1 = preg_replace("/[\r\n]/u", '', $lines[$i]);
             $line2 = preg_replace("/[\r\n]/u", '', $lines[$i+1]);
             $cuppleOfLines = $line1.$nl.$line2;
 
+            // 日付取得
+            if (preg_match("/^[#]+ ([\d]{4}[\/\-][\d]{1,2}[\/\-][\d]{1,2})$/u", $line1, $spentOnFind)) {
+                $spentOn = str_replace('/', '-', $spentOnFind[1]);
+            }
+
             // 行ごとのパーサー
             $ret = $parser->parse($cuppleOfLines);
             // チケット番号がなければそのまま
-            if ($ret['redNum'] != ""){
-                array_push($this->redLines, $ret);
+            if ($ret['redNum'] != "") {
+                array_push($this->redLines, ['spentOn' => $spentOn, 'data' => $ret]);
                 // 行末に時間を追加
                 $newLines .= $line1 . ' ' . $ret['redTime'];
             } else {

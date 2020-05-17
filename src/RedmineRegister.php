@@ -42,10 +42,11 @@ class RedmineRegister
         foreach ($redLines as $redLine) {
             // xmlの組み立て
             $inputXml = "<time_entry>\n";
-            $inputXml .= '<issue_id>' . $redLine['redNum'] . "</issue_id>\n";
-            $inputXml .= '<activity_id>' . $redLine['activityID'] . "</activity_id>\n";
-            $inputXml .= '<hours>' . $redLine['redTime'] . "</hours>\n";
-            $inputXml .= '<comments>' . $redLine['redCom'] . "</comments>\n";
+            $inputXml .= '<issue_id>' . $redLine['data']['redNum'] . "</issue_id>\n";
+            $inputXml .= '<activity_id>' . $redLine['data']['activityID'] . "</activity_id>\n";
+            $inputXml .= '<spent_on>' . $redLine['spentOn'] . "</spent_on>\n";
+            $inputXml .= '<hours>' . $redLine['data']['redTime'] . "</hours>\n";
+            $inputXml .= '<comments>' . $redLine['data']['redCom'] . "</comments>\n";
             $inputXml .= "</time_entry>\n";
             // Redmineに書き出し
             curl_setopt($curlObj, CURLOPT_POSTFIELDS, 'xmlRequest=' . $inputXml);
@@ -63,6 +64,7 @@ class RedmineRegister
     private function resultCheck($resXml)
     {
         $xmlElement = new \SimpleXMLElement($resXml);
+        echo "\nspent_on " . $xmlElement->spent_on;
         echo "\nRegist Tcket #" . $xmlElement->issue['id'];
         echo "\tHours: " . $xmlElement->hours . ' h';
         echo "\tCreated On: " . $xmlElement->created_on;
