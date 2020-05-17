@@ -6,11 +6,12 @@ class TextModify
 {
     public $redLines = [];
     /**
-    * テキストファイルPathを受け取って時間計算結果を追加して下記戻す
-    *
-    * @param  string  $fileName
-    */
-    public function readTextAddWorkTime($fileName){
+     * テキストファイルPathを受け取って時間計算結果を追加して下記戻す
+     *
+     * @param string $fileName
+     */
+    public function readTextAddWorkTime($fileName)
+    {
         // ファイルを行単位で配列に格納
         $lines = file($fileName);
         $newLines = $this->addWorkTime($lines);
@@ -19,11 +20,12 @@ class TextModify
     }
 
     /**
-    * テキストを受け取って、行末に作業時間を追加。upload用の配列も作成。
-    * @param string $lines
-    *
-    */
-    public function addWorkTime($lines){
+     * テキストを受け取って、行末に作業時間を追加。upload用の配列も作成。
+     *
+     * @param string $lines
+     */
+    public function addWorkTime($lines)
+    {
         // for Windows \r\n
         // for Mac \n
         $nl = PHP_EOL;

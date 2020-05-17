@@ -5,20 +5,20 @@ namespace Amano7\RedmineTimeRegister;
 class LineParser
 {
     /**
-    * @param string $pattern
-    *
-    */
+     * @param string $pattern
+     */
     private $pattern = '/^(?!.+[0-9]{1,2}:[0-9]{2}$)^- ([0-9]{1,2}:[0-9]{2}) \#([0-9]+) (.+$)\n^- ([0-9]{1,2}:[0-9]{2}).*$/mu';
-    public function setPattern($ptn){
+    public function setPattern($ptn)
+    {
         $this->pattern = $ptn;
     }
 
     /**
-    * @param string $act
-    * @param string $defID
-    *
-    * 活動(Activity)番号を設定
-    */
+     * @param string $act
+     * @param string $defID
+     *
+     * 活動(Activity)番号を設定
+     */
     private $activities = [
         '\[設計作業\]'        => 8,
         '\[開発作業\]'        => 9,
@@ -33,7 +33,8 @@ class LineParser
     private $defaultId = 9;
 
     // 活動の種類とデフォルト値を配列に格納
-    public function setActivities($act,$defID){
+    public function setActivities($act,$defID)
+    {
         $this->activities = $act;
         $this->defaultId = $defID;
     }
@@ -41,7 +42,7 @@ class LineParser
     /**
      * @param string $line
      *
-     * @return  array [
+     * @return array [
      *      'redNum' => <<TicketNumber>>,
      *      'redCom' => <<Comments>>,
      *      'redTime' => <<Hours>>,
@@ -68,7 +69,7 @@ class LineParser
             // 作業時間
             $workTime = gmdate('G:i', $endTime - $startTime);
             // チケット番号
-            $chicketNum = $match[2];
+            $ticketNum = $match[2];
             // コメント
             $comment  = $match[3];
             // アクティビティー/コメント
@@ -83,7 +84,7 @@ class LineParser
             }
             // 配列に格納
             $redLines = [
-                'redNum' => strval($chicketNum),
+                'redNum' => strval($ticketNum),
                 'redCom' => $matchCom,
                 'redTime' => strval($workTime),
                 'activityID' => $actID,
